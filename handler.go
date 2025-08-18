@@ -101,3 +101,29 @@ func hget(args []Value) Value {
 
 	return Value{typ: "bulk", bulk: value}
 }
+
+// hgetall users
+func hgetall(args []Value) Value {
+	if len(args) != 1 {
+		return Value{typ: "error", str: "ERR wrong number of args"}
+	}
+
+	hash := args[0].bulk
+
+	HSETsMu.RLock()
+	value, ok := HSETs[hash]
+	HSETsMu.RUnlock()
+
+	if !ok {
+		return Value{typ: "null"}
+	}
+
+	hlen := len(value)
+	res := Value{typ: "array", array: make([]Value, 0, hlen*2)}
+
+	for key, val := range value {
+		res.array = append(res.array, Value{typ: "bulk", bulk: key + ": " + val})
+	}
+
+	return res
+}
