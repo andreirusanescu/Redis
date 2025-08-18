@@ -119,7 +119,7 @@ func hgetall(args []Value) Value {
 	}
 
 	hlen := len(value)
-	res := Value{typ: "array", array: make([]Value, 0, hlen*2)}
+	res := Value{typ: "array", array: make([]Value, 0, hlen)}
 
 	for key, val := range value {
 		res.array = append(res.array, Value{typ: "bulk", bulk: key + ": " + val})
